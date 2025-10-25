@@ -9,6 +9,8 @@ import {
   convertToCents,
   convertCentsToDollars,
 } from "./utils/formatCurrency.js";
+
+//Declaring variables
 const loanAmountEl = document.querySelector(".js-loan-principal-amount");
 const loanInterestRateEl = document.querySelector(".js-loan-interest-rate");
 const loanTimeEl = document.querySelector(".js-loan-time");
@@ -21,22 +23,28 @@ if (!years.checked) {
 }
 
 function calUserValues() {
+  //Taking user values
   const principalAmount = convertToCents(Number(loanAmountEl.value));
   const loanTime = Number(
     years.checked ? loanTimeEl.value * 12 : loanTimeEl.value
   );
   const interestRate = Number(loanInterestRateEl.value);
+
+  //checking error
   document.querySelector(".display-error").innerHTML = "";
   if (!principalAmount || !loanTime || !interestRate) {
     document.querySelector(".display-error").innerHTML =
       "Please fill all input with valid data (Numbers)";
     return;
   }
+
+  //Calculations
   const principalEmi = calculateBasicEmi(principalAmount, loanTime);
   const interestEmi = calInterestEmi(principalAmount, loanTime, interestRate);
   const totalEmi = calTotalEmi(principalAmount, loanTime, interestRate);
   const remainingEmi = calRemainingPrincipal(principalAmount, loanTime);
 
+  //generating table for result
   const table = document.createElement("table");
   table.innerHTML = `
   <tr>
@@ -65,6 +73,8 @@ function calUserValues() {
   resultDisplay.innerHTML = "";
   resultDisplay.appendChild(table);
 
+  //calculating total
+
   document.querySelector(".js-total-payable-amount").innerHTML = `
   Total Interest: ${convertCentsToDollars(
     calculateTotal(interestEmi)
@@ -76,6 +86,8 @@ function calUserValues() {
   
   `;
 }
+
+//executing the function when butten clicked
 document
   .querySelector(".js-calculate-emi-btn")
   .addEventListener("click", (e) => {
