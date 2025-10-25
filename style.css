@@ -77,3 +77,8 @@ label {
   border-radius: 0.5rem;
   font-weight: bold;
 }
+
+.display-error {
+  margin: 0.5rem 0 0 0;
+  color: darkred;
+}

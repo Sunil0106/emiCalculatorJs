@@ -10,22 +10,33 @@
     <h1>EMI Calculator</h1>
     <form class="card">
       <label for="total-amount"> Loan Amount </label>
-      <input type="number" id="total-amount" placeholder="100000" />
+      <input
+        type="number"
+        id="total-amount"
+        class="js-loan-principal-amount"
+        placeholder="100000"
+      />
       <label for="rate">Loan Rate(%)</label>
-      <input type="number" id="rate" placeholder="8.5" />
+      <input
+        type="number"
+        id="rate"
+        placeholder="8.5"
+        class="js-loan-interest-rate"
+      />
       <label for="tenure">Loan Tenure</label>
-      <input type="number" id="tenure" placeholder="30" />
-      <div class="duration-type">
+      <input type="number" id="tenure" placeholder="30" class="js-loan-time" />
+      <div class="js-duration-type">
         <input type="radio" name="duration" id="month" />
         <label for="month">Months</label>
         <input type="radio" name="duration" id="year" />
         <label for="year">Years</label>
       </div>
-      <button id="calculate">Calculate</button>
+      <button id="calculate" class="js-calculate-emi-btn">Calculate</button>
+      <div class="display-error"></div>
     </form>
 
-    <div class="result-container"></div>
-    <div class="total"></div>
+    <div class="result-container js-calculation-result"></div>
+    <div class="js-total-payable-amount display-error"></div>
     <script src="scripts/app.js" type="module"></script>
   </body>
 </html>
