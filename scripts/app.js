@@ -1,10 +1,4 @@
-import {
-  calculateBasicEmi,
-  calInterestEmi,
-  calRemainingPrincipal,
-  calTotalEmi,
-  calculateTotal,
-} from "./utils/calculate-fun.js";
+import { calculateSchedule } from "./utils/calculate-fun.js";
 import {
   convertToCents,
   convertCentsToDollars,
@@ -26,24 +20,24 @@ function calUserValues() {
   //Taking user values
   const principalAmount = convertToCents(Number(loanAmountEl.value));
   const loanTime = Number(
-    years.checked ? loanTimeEl.value * 12 : loanTimeEl.value
+    years.checked ? loanTimeEl.value * 12 : loanTimeEl.value,
   );
   const interestRate = Number(loanInterestRateEl.value);
 
   //checking error
   document.querySelector(".display-error").innerHTML = "";
-  if (!principalAmount || !loanTime || !interestRate) {
+  if (principalAmount <= 0 || loanTime <= 0 || interestRate < 0) {
     document.querySelector(".display-error").innerHTML =
       "Please fill all input with valid data (Numbers)";
     return;
   }
 
   //Calculations
-  const principalEmi = calculateBasicEmi(principalAmount, loanTime);
-  const interestEmi = calInterestEmi(principalAmount, loanTime, interestRate);
-  const totalEmi = calTotalEmi(principalAmount, loanTime, interestRate);
-  const remainingEmi = calRemainingPrincipal(principalAmount, loanTime);
-
+  const paymentDetails = calculateSchedule(
+    principalAmount,
+    loanTime,
+    interestRate,
+  );
   //generating table for result
   const table = document.createElement("table");
   table.innerHTML = `
@@ -52,38 +46,42 @@ function calUserValues() {
    <th>Outstanding Balance</th>
   <th>Principal Portion</th>
   <th>Monthly Interest</th>
-  <th>Monthly EMI</th>
+  <th>Monthly Payment</th>
  
   </tr>
   `;
 
-  for (let i = 0; i < loanTime; i++) {
+  paymentDetails.forEach((payment) => {
     const rows = document.createElement("tr");
     rows.innerHTML = `
-   <td>${i + 1}</td>
-   <td>${convertCentsToDollars(remainingEmi[i])}</td>
-   <td>${convertCentsToDollars(principalEmi[i])}</td>
-<td>${convertCentsToDollars(interestEmi[i])}</td>
-<td>${convertCentsToDollars(totalEmi[i])}</td>
+   <td>${payment.month}</td>
+   <td>${convertCentsToDollars(payment.outstandingBalance)}</td>
+   <td>${convertCentsToDollars(payment.principalPortion)}</td>
+<td>${convertCentsToDollars(payment.interest)}</td>
+<td>${convertCentsToDollars(payment.monthlyEmi)}</td>
    `;
-
     table.appendChild(rows);
-  }
+  });
+
   const resultDisplay = document.querySelector(".js-calculation-result");
   resultDisplay.innerHTML = "";
   resultDisplay.appendChild(table);
 
   //calculating total
 
+  const totalPayable = paymentDetails.reduce(
+    (total, payment) => total + payment.monthlyEmi,
+    0,
+  );
+  const totalInterest = paymentDetails.reduce(
+    (total, payment) => total + payment.interest,
+    0,
+  );
+
   document.querySelector(".js-total-payable-amount").innerHTML = `
-  Total Interest: ${convertCentsToDollars(
-    calculateTotal(interestEmi)
-  )} \n  Total Payable Amount ${convertCentsToDollars(
-    principalAmount + calculateTotal(interestEmi)
-  )}
-  
-  
-  
+  Total Interest: ${convertCentsToDollars(totalInterest)} 
+  <br> 
+  Total Payable Amount ${convertCentsToDollars(totalPayable)}
   `;
 }
 
