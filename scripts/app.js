@@ -78,11 +78,15 @@ function calUserValues() {
     0,
   );
 
-  document.querySelector(".js-total-payable-amount").innerHTML = `
-  Total Interest: ${convertCentsToDollars(totalInterest)} 
-  <br> 
-  Total Payable Amount ${convertCentsToDollars(totalPayable)}
+  const totalRow = document.createElement("tr");
+  totalRow.innerHTML = `
+  <td></td>
+  <td>Total Interest</td>
+  <td>${convertCentsToDollars(totalInterest)}</td>
+  <td>Total Payable</td>
+  <td>${convertCentsToDollars(totalPayable)}</td>
   `;
+  table.appendChild(totalRow);
 }
 
 //executing the function when butten clicked
